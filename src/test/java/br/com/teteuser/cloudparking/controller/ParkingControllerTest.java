@@ -18,7 +18,6 @@ class ParkingControllerTest {
 
     @BeforeEach
     public void setUpTest(){
-        System.out.println(randomPort);
         RestAssured.port = randomPort;
     }
 
@@ -29,7 +28,6 @@ class ParkingControllerTest {
                 .get("parking")
                 .then()
                 .statusCode(200);
-                //.body("license[0]", Matchers.equalTo("UFA-1234"));
     }
 
     @Test

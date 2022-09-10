@@ -1,68 +1,58 @@
 package br.com.teteuser.cloudparking.service;
 
-import br.com.teteuser.cloudparking.controller.dto.ParkingRequest;
 import br.com.teteuser.cloudparking.exception.ParkingNotFoundException;
 import br.com.teteuser.cloudparking.model.Parking;
+import br.com.teteuser.cloudparking.repository.ParkingRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class ParkingService {
 
-    private static Map<String, Parking> parkingMap = new HashMap();
+    private ParkingRepository parkingRepository;
 
+    public ParkingService(ParkingRepository parkingRepository){
+        this.parkingRepository = parkingRepository;
+    }
+
+    @Transactional(readOnly = true)
     public List<Parking> findAll(){
-        return parkingMap.values().stream().collect(Collectors.toList());
+        return parkingRepository.findAll();
     }
 
-    private static String getUUID(){
-        return UUID.randomUUID().toString().replace("-", "");
+    @Transactional(readOnly = true)
+    public Parking findById(Long id){
+        return parkingRepository.findById(id).orElseThrow(() -> new ParkingNotFoundException(id));
     }
 
-    public Parking findById(String id){
-        Parking parking = parkingMap.get(id);
-        if(parking == null){
-            throw new ParkingNotFoundException(id);
-        }
-        return parking;
-    }
-
+    @Transactional
     public Parking save(Parking parkingToBeSaved){
-        var newId = getUUID();
-        parkingToBeSaved.setId(newId);
         parkingToBeSaved.setEntryDate(LocalDateTime.now());
-        parkingMap.put(newId, parkingToBeSaved);
-        var savedParking = parkingToBeSaved;
-        return savedParking;
+        return parkingRepository.save(parkingToBeSaved);
     }
 
-    public void delete(String id) {
-        findById(id);
-        parkingMap.remove(id);
+    @Transactional
+    public void delete(Long id) {
+        parkingRepository.delete(findById(id));
     }
 
-    public Parking update(String id, Parking parkingToBeUpdated) {
-        var foundParking = findById(id);
-        foundParking.setColor(parkingToBeUpdated.getColor());
-        foundParking.setModel(parkingToBeUpdated.getModel());
-        foundParking.setLicense(parkingToBeUpdated.getLicense());
-        foundParking.setState(parkingToBeUpdated.getState());
-        parkingMap.replace(id, foundParking);
-        return foundParking;
+    @Transactional
+    public Parking update(Long id, Parking parkingToBeUpdated) {
+        Parking foundParking = findById(id);
+        BeanUtils.copyProperties(parkingToBeUpdated, foundParking);
+        return parkingRepository.save(foundParking);
     }
 
-    public Parking exit(String id, Parking parking){
-        var foundParking = findById(id);
-        LocalDateTime saida = LocalDateTime.now();
-        foundParking.setExitDate(saida);
-        parkingMap.replace(id, foundParking);
-        return foundParking;
+    @Transactional
+    public Parking checkOut(Long id){
+        Parking foundParking = findById(id);
+        foundParking.setExitDate(LocalDateTime.now());
+        foundParking.setBill(ParkingCheckOut.getBill(foundParking));
+        return parkingRepository.save(foundParking);
     }
 
 }

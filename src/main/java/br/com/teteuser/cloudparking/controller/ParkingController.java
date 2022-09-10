@@ -31,7 +31,7 @@ public class ParkingController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ParkingResponse> findById(@PathVariable String id){
+    public ResponseEntity<ParkingResponse> findById(@PathVariable Long id){
         Parking returnedParking = parkingService.findById(id);
         ParkingResponse parkingResponse = parkingMapper.parkingToResponse(returnedParking);
         return ResponseEntity.ok().body(parkingResponse);
@@ -46,7 +46,7 @@ public class ParkingController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ParkingResponse> update(@PathVariable String id, @RequestBody ParkingRequest request){
+    public ResponseEntity<ParkingResponse> update(@PathVariable Long id, @RequestBody ParkingRequest request){
         Parking parkingToBeUpdated = parkingMapper.requestToParking(request);
         Parking parking = parkingService.update(id, parkingToBeUpdated);
         ParkingResponse savedParkingResponse = parkingMapper.parkingToResponse(parking);
@@ -54,15 +54,14 @@ public class ParkingController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ParkingResponse> exit(@PathVariable String id, @RequestBody ParkingRequest request){
-        Parking parkingToBeUpdated = parkingMapper.requestToParking(request);
-        Parking parking = parkingService.exit(id, parkingToBeUpdated);
+    public ResponseEntity<ParkingResponse> exit(@PathVariable Long id){
+        Parking parking = parkingService.checkOut(id);
         ParkingResponse changedParkingResponse = parkingMapper.parkingToResponse(parking);
         return ResponseEntity.status(HttpStatus.OK).body(changedParkingResponse);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity delete(@PathVariable String id){
+    public ResponseEntity delete(@PathVariable Long id){
         parkingService.delete(id);
         return ResponseEntity.noContent().build();
     }
