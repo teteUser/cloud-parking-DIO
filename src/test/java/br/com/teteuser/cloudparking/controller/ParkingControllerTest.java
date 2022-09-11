@@ -2,7 +2,6 @@ package br.com.teteuser.cloudparking.controller;
 
 import br.com.teteuser.cloudparking.controller.dto.ParkingRequest;
 import io.restassured.RestAssured;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,8 +23,10 @@ class ParkingControllerTest {
     @Test
     void whenFindAllCheckResult() {
         RestAssured.given()
+                .auth()
+                .basic("user", "Dio@123")
                 .when()
-                .get("parking")
+                .get("/parking")
                 .then()
                 .statusCode(200);
     }
@@ -40,16 +41,15 @@ class ParkingControllerTest {
         saveDTO.setState("SP");
 
         RestAssured.given()
+                .auth()
+                .basic("user", "Dio@123")
                 .when()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(saveDTO)
-                .post("parking")
+                .post("/parking")
                 .then()
-                .statusCode(201)
-                .body("license", Matchers.equalTo("UAU-0505"))
-                .body("color", Matchers.equalTo("Amarelo"))
-                .body("model", Matchers.equalTo("Gol"))
-                .body("state", Matchers.equalTo("SP"));
+                .statusCode(401); // should return 401 because access is forbidden
     }
+
 
 }
