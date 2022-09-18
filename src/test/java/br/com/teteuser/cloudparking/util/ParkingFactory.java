@@ -13,7 +13,7 @@ public class ParkingFactory {
                 .state("SP")
                 .model("Gol")
                 .color("Black")
-                .entryDate(LocalDateTime.of(2022, 09, 18, 10, 0))
+                .entryDate(LocalDateTime.of(2022, 9, 18, 10, 0))
                 .build();
     }
 
