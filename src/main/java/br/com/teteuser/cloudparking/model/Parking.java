@@ -1,6 +1,7 @@
 package br.com.teteuser.cloudparking.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "tb_parking")
 public class Parking {
@@ -33,7 +35,5 @@ public class Parking {
     private LocalDateTime entryDate;
     private LocalDateTime exitDate;
     private Double bill;
-
-
 
 }

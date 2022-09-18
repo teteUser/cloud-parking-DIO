@@ -1,55 +1,52 @@
 package br.com.teteuser.cloudparking.controller;
 
-import br.com.teteuser.cloudparking.controller.dto.ParkingRequest;
-import io.restassured.RestAssured;
+import br.com.teteuser.cloudparking.service.ParkingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.MediaType;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
 
-
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest
+@AutoConfigureMockMvc
+@ExtendWith(SpringExtension.class)
 class ParkingControllerTest {
 
-    @LocalServerPort
-    private int randomPort;
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private ParkingService parkingService;
 
     @BeforeEach
-    public void setUpTest(){
-        RestAssured.port = randomPort;
+    void setUp() {
     }
 
     @Test
-    void whenFindAllCheckResult() {
-        RestAssured.given()
-                .auth()
-                .basic("user", "Dio@123")
-                .when()
-                .get("/parking")
-                .then()
-                .statusCode(200);
+    void findAll() {
     }
 
     @Test
-    void whenSaveThenCheckIsSaved(){
-
-        var saveDTO = new ParkingRequest();
-        saveDTO.setColor("Amarelo");
-        saveDTO.setLicense("UAU-0505");
-        saveDTO.setModel("Gol");
-        saveDTO.setState("SP");
-
-        RestAssured.given()
-                .auth()
-                .basic("user", "Dio@123")
-                .when()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(saveDTO)
-                .post("/parking")
-                .then()
-                .statusCode(401); // should return 401 because access is forbidden
+    void findById() {
     }
 
+    @Test
+    void save() {
+    }
 
+    @Test
+    void update() {
+    }
+
+    @Test
+    void exit() {
+    }
+
+    @Test
+    void delete() {
+    }
 }
