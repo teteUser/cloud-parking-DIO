@@ -62,8 +62,8 @@ public class ParkingController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable Long id){
-        parkingService.delete(id);
-        return ResponseEntity.noContent().build();
+        Boolean isDeleted = parkingService.delete(id);
+        return isDeleted == true ? ResponseEntity.noContent().build() : ResponseEntity.internalServerError().build();
     }
 
 }

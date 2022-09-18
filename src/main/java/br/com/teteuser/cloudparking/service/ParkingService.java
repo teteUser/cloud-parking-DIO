@@ -36,8 +36,9 @@ public class ParkingService {
     }
 
     @Transactional
-    public void delete(Long id) {
+    public Boolean delete(Long id) {
         parkingRepository.delete(findById(id));
+        return true;
     }
 
     @Transactional
